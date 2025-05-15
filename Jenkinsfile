@@ -96,20 +96,23 @@ pipeline {
         }
 
         stage('Integration Test') {
+stage('Integration Test') {
   steps {
     sh '''
-    
-      ALB_DNS_NAME=$(terraform output alb_dns_name)
+
+      ALB_DNS_NAME=$(terraform output -raw alb_dns_name)
       
-      # set HTTP GET request
+   
       if curl -s -o /dev/null -w "%{http_code}" "$ALB_DNS_NAME" | grep -q "200"; then
         echo "Integration test passed: Application is responding with HTTP 200"
       else
-        echo "Integration test failed: Application is not responding correctly"
+        echo "Integration test failed: Application is not responding correctly.  Status code: \$(curl -s -w "%{http_code}" "$ALB_DNS_NAME")"
         exit 1
       fi
     '''
   }
+}
+
 }
     }
 
