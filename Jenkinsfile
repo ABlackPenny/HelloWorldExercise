@@ -97,18 +97,17 @@ pipeline {
 
 stage('Integration Test') {
   steps {
-    bat '''
-
-      ALB_DNS_NAME=$(terraform output -raw alb_dns_name)
-      
-  
-      if curl -s -o /dev/null -w "%{http_code}" "$ALB_DNS_NAME" | grep -q "200"; then
-        echo "Integration test passed: Application is responding with HTTP 200"
-      else
-        echo "Integration test failed: Application is not responding correctly.  Status code: \$(curl -s -w "%{http_code}" "$ALB_DNS_NAME")"
-        exit 1
-      fi
-    '''
+    bat """  // [!code ++]
+      cd aws-config
+      FOR /F "delims=" %%i IN ('terraform output -raw alb_dns_name') DO SET ALB_DNS_NAME=%%i
+      curl -s -o nul -w "%%{http_code}" http://%ALB_DNS_NAME% | findstr "200" > nul
+      IF %ERRORLEVEL% EQU 0 (
+        echo Integration test passed: Application is responding with HTTP 200
+      ) ELSE (
+        echo Integration test failed: Application is not responding correctly.
+        exit /b 1
+      )
+    """
   }
 }
 
