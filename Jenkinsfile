@@ -97,7 +97,7 @@ pipeline {
 
 stage('Integration Test') {
   steps {
-    sh '''
+    bat '''
 
       ALB_DNS_NAME=$(terraform output -raw alb_dns_name)
       
