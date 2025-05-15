@@ -95,14 +95,13 @@ pipeline {
             }
         }
 
-        stage('Integration Test') {
 stage('Integration Test') {
   steps {
     sh '''
 
       ALB_DNS_NAME=$(terraform output -raw alb_dns_name)
       
-   
+  
       if curl -s -o /dev/null -w "%{http_code}" "$ALB_DNS_NAME" | grep -q "200"; then
         echo "Integration test passed: Application is responding with HTTP 200"
       else
@@ -113,7 +112,6 @@ stage('Integration Test') {
   }
 }
 
-}
     }
 
     post {
