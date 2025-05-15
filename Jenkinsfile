@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-        triggers {
-        githubPush()  // GitHub webhook
-    }
+    triggers {
+    pollSCM('*/5 * * * *')  // 5 minutes
+}
 
     environment {
         AWS_REGION = 'ap-southeast-2'  
